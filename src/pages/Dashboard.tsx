@@ -1,8 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import PaymentModal from '../components/PaymentModal';
+import DistributionModal from '../components/DistributionModal';
 
 const Dashboard: React.FC = () => {
     const navigate = useNavigate();
+    const [paymentModal, setPaymentModal] = useState({ open: false, groupId: '', amount: '' });
+    const [distributionModal, setDistributionModal] = useState({ open: false, groupId: '', poolAmount: '', recipient: '' });
+
     return (
         <div className="min-h-screen p-6 font-sans max-w-4xl mx-auto">
             {/* Header Mejorado */}
@@ -42,7 +47,10 @@ const Dashboard: React.FC = () => {
                         Create Group
                     </button>
 
-                    <button className="btn-secondary flex-1 flex items-center justify-center gap-2">
+                    <button
+                        onClick={() => navigate('/join-group')}
+                        className="btn-secondary flex-1 flex items-center justify-center gap-2"
+                    >
                         <span>👥</span>
                         Join Group
                     </button>
@@ -52,99 +60,110 @@ const Dashboard: React.FC = () => {
             <div className="grid md:grid-cols-2 gap-6">
                 {/* Your Pasanaku Groups - Mejorado */}
                 <div className="card">
-                    <h2 className="text-lg font-semibold mb-4 text-gray-900 flex items-center gap-2">
+                    <h2 className="text-lg font-semibold mb-4 text-white flex items-center gap-2">
                         <span className="w-2 h-2 bg-celo-green rounded-full"></span>
                         Your Pasanaku Groups
                     </h2>
 
                     {/* Group 1 */}
-                    <div className="border border-gray-200 rounded-xl p-4 mb-4 hover:border-celo-green transition-colors">
+                    <div className="border border-white/20 rounded-xl p-4 mb-4 hover:border-celo-green transition-colors bg-white/10">
                         <div className="flex justify-between items-start mb-3">
                             <div className="flex items-center gap-2">
-                                <span className="font-semibold text-gray-900">GROUP #1234</span>
+                                <span className="font-semibold text-white">GROUP #1234</span>
                                 <span className="badge-active">Active</span>
                             </div>
                         </div>
                         <div className="space-y-2 mb-4">
                             <div className="flex items-center gap-2 text-sm">
-                                <span className="text-gray-600">💰 Pool:</span>
-                                <span className="font-semibold text-gray-900">80 USDC</span>
-                                <span className="text-gray-400">•</span>
-                                <span className="text-gray-600">👥 4/8 paid</span>
+                                <span className="glass-text-light">💰 Pool:</span>
+                                <span className="font-semibold text-white">80 USDC</span>
+                                <span className="glass-text-light">•</span>
+                                <span className="glass-text-light">👥 4/8 paid</span>
                             </div>
-                            <div className="text-gray-500 text-sm">
+                            <div className="glass-text-light text-sm">
                                 🔄 Round 3 of 8 - <span className="text-celo-green font-medium">Your turn in round 5</span>
                             </div>
                         </div>
                         <div className="flex gap-2">
-                            <button className="bg-celo-green text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-600 transition-colors flex-1">
+                            <button
+                                onClick={() => setPaymentModal({ open: true, groupId: '#1234', amount: '10' })}
+                                className="bg-celo-green text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-600 transition-colors flex-1">
                                 Pay Fee
                             </button>
                             <button
                                 onClick={() => navigate('/group/1234')}
-                                className="border border-gray-300 px-4 py-2 rounded-lg text-sm font-medium hover:border-gray-400 transition-colors">
+                                className="border border-white/20 px-4 py-2 rounded-lg text-sm font-medium hover:border-white/40 transition-colors text-white">
                                 View Details
                             </button>
                         </div>
                     </div>
 
                     {/* Group 2 */}
-                    <div className="border border-gray-200 rounded-xl p-4 mb-4 hover:border-circle-blue transition-colors">
+                    <div className="border border-white/20 rounded-xl p-4 mb-4 hover:border-circle-blue transition-colors bg-white/10">
                         <div className="flex justify-between items-start mb-3">
                             <div className="flex items-center gap-2">
-                                <span className="font-semibold text-gray-900">GROUP #5678</span>
+                                <span className="font-semibold text-white">GROUP #5678</span>
                                 <span className="badge-ready">Ready</span>
                             </div>
                         </div>
                         <div className="space-y-2 mb-4">
                             <div className="flex items-center gap-2 text-sm">
-                                <span className="text-gray-600">💰 Pool:</span>
-                                <span className="font-semibold text-gray-900">150 USDC</span>
-                                <span className="text-gray-400">•</span>
-                                <span className="text-gray-600">👥 4/4 paid ✅</span>
+                                <span className="glass-text-light">💰 Pool:</span>
+                                <span className="font-semibold text-white">150 USDC</span>
+                                <span className="glass-text-light">•</span>
+                                <span className="glass-text-light">👥 4/4 paid ✅</span>
                             </div>
-                            <div className="text-gray-500 text-sm">
+                            <div className="glass-text-light text-sm">
                                 🔄 Round 2 of 4 - <span className="text-circle-blue font-medium">READY TO DISTRIBUTE</span>
                             </div>
                         </div>
                         <div className="flex gap-2">
-                            <button className="bg-circle-blue text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors flex-1">
+                            <button
+                                onClick={() => setDistributionModal({
+                                    open: true,
+                                    groupId: '#5678',
+                                    poolAmount: '150',
+                                    recipient: '0x3e4f...g5h6'
+                                })}
+                                className="bg-circle-blue text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors flex-1">
                                 Distribute Pool
                             </button>
                             <button
-                                onClick={() => navigate('/group/1234')}
-                                className="border border-gray-300 px-4 py-2 rounded-lg text-sm font-medium hover:border-gray-400 transition-colors">
+                                onClick={() => navigate('/group/5678')}
+                                className="border border-white/20 px-4 py-2 rounded-lg text-sm font-medium hover:border-white/40 transition-colors text-white">
                                 View Details
                             </button>
                         </div>
                     </div>
 
                     {/* Group 3 */}
-                    <div className="border border-gray-200 rounded-xl p-4 hover:border-xmtp-yellow transition-colors">
+                    <div className="border border-white/20 rounded-xl p-4 hover:border-xmtp-yellow transition-colors bg-white/10">
                         <div className="flex justify-between items-start mb-3">
                             <div className="flex items-center gap-2">
-                                <span className="font-semibold text-gray-900">GROUP #8910</span>
+                                <span className="font-semibold text-white">GROUP #8910</span>
                                 <span className="badge-waiting">Waiting</span>
                             </div>
                         </div>
                         <div className="space-y-2 mb-4">
                             <div className="flex items-center gap-2 text-sm">
-                                <span className="text-gray-600">💰 Pool:</span>
-                                <span className="font-semibold text-gray-900">40 USDC</span>
-                                <span className="text-gray-400">•</span>
-                                <span className="text-gray-600">👥 2/6 paid</span>
+                                <span className="glass-text-light">💰 Pool:</span>
+                                <span className="font-semibold text-white">40 USDC</span>
+                                <span className="glass-text-light">•</span>
+                                <span className="glass-text-light">👥 2/6 paid</span>
                             </div>
-                            <div className="text-gray-500 text-sm">
-                                🔄 Round 1 of 6 - <span className="text-orange-500 font-medium">Waiting for payments</span>
+                            <div className="glass-text-light text-sm">
+                                🔄 Round 1 of 6 - <span className="text-orange-400 font-medium">Waiting for payments</span>
                             </div>
                         </div>
                         <div className="flex gap-2">
-                            <button className="bg-celo-green text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-600 transition-colors flex-1">
+                            <button
+                                onClick={() => setPaymentModal({ open: true, groupId: '#8910', amount: '10' })}
+                                className="bg-celo-green text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-600 transition-colors flex-1">
                                 Pay Fee
                             </button>
                             <button
-                                onClick={() => navigate('/group/1234')}
-                                className="border border-gray-300 px-4 py-2 rounded-lg text-sm font-medium hover:border-gray-400 transition-colors">
+                                onClick={() => navigate('/group/8910')}
+                                className="border border-white/20 px-4 py-2 rounded-lg text-sm font-medium hover:border-white/40 transition-colors text-white">
                                 View Details
                             </button>
                         </div>
@@ -153,33 +172,42 @@ const Dashboard: React.FC = () => {
 
                 {/* XMTP Notifications - Mejorado */}
                 <div className="card">
-                    <h2 className="text-lg font-semibold mb-4 text-gray-900 flex items-center gap-2">
+                    <h2 className="text-lg font-semibold mb-4 text-white flex items-center gap-2">
                         <span className="w-2 h-2 bg-xmtp-yellow rounded-full"></span>
                         XMTP Notifications
                     </h2>
 
                     {/* Notification 1 */}
-                    <div className="border border-gray-200 rounded-xl p-4 mb-4 hover:border-celo-green transition-colors">
-                        <div className="font-semibold text-sm mb-2 text-gray-900">🎯 Payment Due - Group #1234</div>
-                        <div className="text-gray-600 text-sm mb-3">Your 10 USDC fee is due tomorrow</div>
-                        <button className="bg-celo-green text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-600 transition-colors w-full">
+                    <div className="border border-white/20 rounded-xl p-4 mb-4 hover:border-celo-green transition-colors bg-white/10">
+                        <div className="font-semibold text-sm mb-2 text-white">🎯 Payment Due - Group #1234</div>
+                        <div className="glass-text-light text-sm mb-3">Your 10 USDC fee is due tomorrow</div>
+                        <button
+                            onClick={() => setPaymentModal({ open: true, groupId: '#1234', amount: '10' })}
+                            className="bg-celo-green text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-600 transition-colors w-full">
                             Pay Now
                         </button>
                     </div>
 
                     {/* Notification 2 */}
-                    <div className="border border-gray-200 rounded-xl p-4 mb-4 hover:border-circle-blue transition-colors">
-                        <div className="font-semibold text-sm mb-2 text-gray-900">🎉 Congratulations! - Group #5678</div>
-                        <div className="text-gray-600 text-sm mb-3">Everyone paid, you can distribute 150 USDC</div>
-                        <button className="bg-circle-blue text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors w-full">
+                    <div className="border border-white/20 rounded-xl p-4 mb-4 hover:border-circle-blue transition-colors bg-white/10">
+                        <div className="font-semibold text-sm mb-2 text-white">🎉 Congratulations! - Group #5678</div>
+                        <div className="glass-text-light text-sm mb-3">Everyone paid, you can distribute 150 USDC</div>
+                        <button
+                            onClick={() => setDistributionModal({
+                                open: true,
+                                groupId: '#5678',
+                                poolAmount: '150',
+                                recipient: '0x3e4f...g5h6'
+                            })}
+                            className="bg-circle-blue text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors w-full">
                             Distribute
                         </button>
                     </div>
 
                     {/* Notification 3 */}
-                    <div className="border border-gray-200 rounded-xl p-4 hover:border-xmtp-yellow transition-colors">
-                        <div className="font-semibold text-sm mb-2 text-gray-900">👋 New Message - Group #1234</div>
-                        <div className="text-gray-600 text-sm mb-3">Is everyone ready for the next round?</div>
+                    <div className="border border-white/20 rounded-xl p-4 hover:border-xmtp-yellow transition-colors bg-white/10">
+                        <div className="font-semibold text-sm mb-2 text-white">👋 New Message - Group #1234</div>
+                        <div className="glass-text-light text-sm mb-3">Is everyone ready for the next round?</div>
                         <button className="bg-xmtp-yellow text-gray-900 px-4 py-2 rounded-lg text-sm font-medium hover:bg-yellow-400 transition-colors w-full">
                             Reply
                         </button>
@@ -188,7 +216,7 @@ const Dashboard: React.FC = () => {
             </div>
 
             {/* Footer con Sponsors */}
-            <div className="mt-8 text-center text-gray-500 text-sm">
+            <div className="mt-8 text-center glass-text-light text-sm">
                 <div className="flex justify-center items-center gap-6 mb-2">
                     <span className="font-semibold text-celo-green">Celo</span>
                     <span className="font-semibold text-circle-blue">Circle USDC</span>
@@ -196,6 +224,22 @@ const Dashboard: React.FC = () => {
                 </div>
                 Built for ETH Global Hackathon
             </div>
+
+            {/* 🔥 AQUÍ VAN LOS MODALES - AL FINAL DEL RETURN */}
+            <PaymentModal
+                isOpen={paymentModal.open}
+                onClose={() => setPaymentModal({ open: false, groupId: '', amount: '' })}
+                groupId={paymentModal.groupId}
+                amount={paymentModal.amount}
+            />
+
+            <DistributionModal
+                isOpen={distributionModal.open}
+                onClose={() => setDistributionModal({ open: false, groupId: '', poolAmount: '', recipient: '' })}
+                groupId={distributionModal.groupId}
+                poolAmount={distributionModal.poolAmount}
+                recipient={distributionModal.recipient}
+            />
         </div>
     );
 };
