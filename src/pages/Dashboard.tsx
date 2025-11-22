@@ -122,20 +122,34 @@ const Dashboard: React.FC = () => {
                     ))}
                 </div>
 
-                {/* XMTP Notifications */}
+                {/* XMTP Notifications - VERSIÓN MEJORADA PERO CON BOTONES FUNCIONALES */}
                 <div className="card">
-                    <h2 className="text-lg font-semibold mb-4 text-white flex items-center gap-2">
-                        <span className="w-2 h-2 bg-xmtp-yellow rounded-full"></span>
-                        XMTP Notifications
-                    </h2>
+                    <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+                            <span className="w-2 h-2 bg-xmtp-yellow rounded-full"></span>
+                            XMTP Notifications
+                        </h2>
+                        <div className="bg-xmtp-yellow/20 text-xmtp-yellow text-xs font-medium px-2 py-1 rounded-full border border-xmtp-yellow/30">
+                            Secure
+                        </div>
+                    </div>
 
                     {notifications.map((notification) => (
                         <div key={notification.id} className="border border-white/20 rounded-xl p-4 mb-4 hover:border-xmtp-yellow transition-colors bg-white/10">
-                            <div className="font-semibold text-sm mb-2 text-white">
-                                {notification.type === 'payment' ? '🎯' :
-                                    notification.type === 'distribution' ? '🎉' : '⏰'} {notification.title}
+                            <div className="flex items-start gap-3 mb-3">
+                                <div className="text-lg">
+                                    {notification.type === 'payment' ? '🎯' :
+                                        notification.type === 'distribution' ? '🎉' : '⏰'}
+                                </div>
+                                <div className="flex-1">
+                                    <div className="font-semibold text-sm text-white mb-1">
+                                        {notification.title}
+                                    </div>
+                                    <div className="glass-text-light text-sm">
+                                        {notification.message}
+                                    </div>
+                                </div>
                             </div>
-                            <div className="glass-text-light text-sm mb-3">{notification.message}</div>
                             <button
                                 onClick={() => {
                                     if (notification.type === 'payment') {
@@ -173,6 +187,13 @@ const Dashboard: React.FC = () => {
                             </button>
                         </div>
                     ))}
+
+                    {/* XMTP Features Badge */}
+                    <div className="mt-4 p-3 bg-xmtp-yellow/10 rounded-lg border border-xmtp-yellow/20">
+                        <div className="text-xs glass-text-light text-center">
+                            <span className="text-xmtp-yellow font-semibold">Powered by XMTP</span> • Secure wallet-to-wallet messaging
+                        </div>
+                    </div>
                 </div>
             </div>
 
