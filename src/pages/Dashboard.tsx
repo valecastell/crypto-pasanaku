@@ -80,7 +80,9 @@ const Dashboard: React.FC = () => {
                             <button className="bg-celo-green text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-600 transition-colors flex-1">
                                 Pay Fee
                             </button>
-                            <button className="border border-gray-300 px-4 py-2 rounded-lg text-sm font-medium hover:border-gray-400 transition-colors">
+                            <button
+                                onClick={() => navigate('/group/1234')}
+                                className="border border-gray-300 px-4 py-2 rounded-lg text-sm font-medium hover:border-gray-400 transition-colors">
                                 View Details
                             </button>
                         </div>
@@ -109,7 +111,9 @@ const Dashboard: React.FC = () => {
                             <button className="bg-circle-blue text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors flex-1">
                                 Distribute Pool
                             </button>
-                            <button className="border border-gray-300 px-4 py-2 rounded-lg text-sm font-medium hover:border-gray-400 transition-colors">
+                            <button
+                                onClick={() => navigate('/group/1234')}
+                                className="border border-gray-300 px-4 py-2 rounded-lg text-sm font-medium hover:border-gray-400 transition-colors">
                                 View Details
                             </button>
                         </div>
@@ -138,7 +142,9 @@ const Dashboard: React.FC = () => {
                             <button className="bg-celo-green text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-600 transition-colors flex-1">
                                 Pay Fee
                             </button>
-                            <button className="border border-gray-300 px-4 py-2 rounded-lg text-sm font-medium hover:border-gray-400 transition-colors">
+                            <button
+                                onClick={() => navigate('/group/1234')}
+                                className="border border-gray-300 px-4 py-2 rounded-lg text-sm font-medium hover:border-gray-400 transition-colors">
                                 View Details
                             </button>
                         </div>
