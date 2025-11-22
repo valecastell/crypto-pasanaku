@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PaymentModal from '../components/PaymentModal';
 import DistributionModal from '../components/DistributionModal';
+import SetAlertModal from '../components/SetAlertModal';
+
 
 const Dashboard: React.FC = () => {
     const navigate = useNavigate();
     const [paymentModal, setPaymentModal] = useState({ open: false, groupId: '', amount: '' });
     const [distributionModal, setDistributionModal] = useState({ open: false, groupId: '', poolAmount: '', recipient: '' });
+    const [alertModal, setAlertModal] = useState({ open: false, groupId: '', amount: '' });
 
     return (
         <div className="min-h-screen p-6 font-sans max-w-4xl mx-auto">
@@ -204,12 +207,14 @@ const Dashboard: React.FC = () => {
                         </button>
                     </div>
 
-                    {/* Notification 3 */}
+                    {/* Notification 3 Reminder */}
                     <div className="border border-white/20 rounded-xl p-4 hover:border-xmtp-yellow transition-colors bg-white/10">
-                        <div className="font-semibold text-sm mb-2 text-white">👋 New Message - Group #1234</div>
-                        <div className="glass-text-light text-sm mb-3">Is everyone ready for the next round?</div>
-                        <button className="bg-xmtp-yellow text-gray-900 px-4 py-2 rounded-lg text-sm font-medium hover:bg-yellow-400 transition-colors w-full">
-                            Reply
+                        <div className="font-semibold text-sm mb-2 text-white">⏰ Reminder - Group #8910</div>
+                        <div className="glass-text-light text-sm mb-3">1 day left until your next payment</div>
+                        <button
+                            onClick={() => setAlertModal({ open: true, groupId: '#8910', amount: '10' })}
+                            className="bg-xmtp-yellow text-gray-900 px-4 py-2 rounded-lg text-sm font-medium hover:bg-yellow-400 transition-colors w-full">
+                            Set Alert
                         </button>
                     </div>
                 </div>
@@ -225,7 +230,7 @@ const Dashboard: React.FC = () => {
                 Built for ETH Global Hackathon
             </div>
 
-            {/* 🔥 AQUÍ VAN LOS MODALES - AL FINAL DEL RETURN */}
+            {/* THE MODALES */}
             <PaymentModal
                 isOpen={paymentModal.open}
                 onClose={() => setPaymentModal({ open: false, groupId: '', amount: '' })}
@@ -240,6 +245,14 @@ const Dashboard: React.FC = () => {
                 poolAmount={distributionModal.poolAmount}
                 recipient={distributionModal.recipient}
             />
+
+            <SetAlertModal
+                isOpen={alertModal.open}
+                onClose={() => setAlertModal({ open: false, groupId: '', amount: '' })}
+                groupId={alertModal.groupId}
+                amount={alertModal.amount}
+            />
+
         </div>
     );
 };
