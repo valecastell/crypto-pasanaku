@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    margin: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background: linear-gradient(135deg,
+    #667eea 0%,
+    #764ba2 25%,
+    #f093fb 50%,
+    #f5576c 75%,
+    #4facfe 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    color: #1a202c;
+}
+
+/* Mejora los botones */
+.btn-primary {
+    @apply bg-celo-green text-white font-semibold py-3 px-6 rounded-xl hover:bg-green-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105;
+}
+
+.btn-secondary {
+    @apply bg-circle-blue text-white font-semibold py-3 px-6 rounded-xl hover:bg-blue-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105;
+}
+
+/* Cards mejoradas con efecto glassmorphism */
+.card {
+    @apply bg-white/20 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-white/30 hover:border-white/50 transition-all duration-300;
+}
+
+/* Badges de estado con más contraste */
+.badge-active {
+    @apply bg-green-500/20 text-green-100 text-xs font-bold px-3 py-1.5 rounded-full border border-green-400/30;
+}
+
+.badge-ready {
+    @apply bg-blue-500/20 text-blue-100 text-xs font-bold px-3 py-1.5 rounded-full border border-blue-400/30;
+}
+
+.badge-waiting {
+    @apply bg-yellow-500/20 text-yellow-100 text-xs font-bold px-3 py-1.5 rounded-full border border-yellow-400/30;
+}
+
+/* Efecto glassmorphism para el header de balance */
+.balance-header {
+    @apply bg-gradient-to-r from-white/30 to-white/20 backdrop-blur-xl border border-white/40 shadow-2xl;
+}
+
+/* Mejora los botones de acción */
+.action-btn {
+    @apply bg-white/20 backdrop-blur-sm text-white font-semibold px-4 py-2 rounded-lg text-sm border border-white/30 hover:bg-white/30 hover:border-white/50 transition-all duration-200;
+}
+
+/* Textos con mejor contraste sobre fondo oscuro */
+.glass-text {
+    @apply text-white/90;
+}
+
+.glass-text-light {
+    @apply text-white/70;
+}
