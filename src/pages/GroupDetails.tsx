@@ -1,17 +1,11 @@
+// En pages/GroupDetails.tsx - VAMOS A ENRIQUECERLO
 import React, { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import PaymentModal from '../components/PaymentModal';
 import DistributionModal from '../components/DistributionModal';
 import SetAlertModal from '../components/SetAlertModal';
-
-// Interface para participantes
-interface Participant {
-    address: string;
-    paid: boolean;
-    isYou: boolean;
-    isAvailable?: boolean;
-}
+import OnChainVerification from '../components/OnChainVerification';
 
 const GroupDetails: React.FC = () => {
     const { groupId } = useParams();
@@ -20,8 +14,8 @@ const GroupDetails: React.FC = () => {
     const [paymentModal, setPaymentModal] = useState({ open: false, groupId: '', amount: '' });
     const [distributionModal, setDistributionModal] = useState({ open: false, groupId: '', poolAmount: '', recipient: '' });
     const [alertModal, setAlertModal] = useState({ open: false, groupId: '', amount: '' });
+    const [activeTab, setActiveTab] = useState<'overview' | 'participants' | 'history'>('overview');
 
-    // Encontrar el grupo por ID
     const group = groups.find(g => g.id === parseInt(groupId || '0'));
 
     if (!group) {
@@ -40,223 +34,293 @@ const GroupDetails: React.FC = () => {
         );
     }
 
-    // Datos simulados de participantes CON INTERFACE CORRECTA
-    const participants: Participant[] = [
-        { address: '0x1a2b...c3d4', paid: true, isYou: true },
-        { address: '0x3e4f...g5h6', paid: true, isYou: false },
-        { address: '0x7i8j...k9l0', paid: false, isYou: false },
-        { address: '0x1m2n...o3p4', paid: true, isYou: false },
-        { address: '0x5q6r...s7t8', paid: false, isYou: false },
-        ...Array.from({ length: group.maxParticipants - 5 }, (_, i) => ({
-            address: `Slot ${i + 6} available`,
-            paid: false,
-            isYou: false,
-            isAvailable: true
-        }))
+    // Datos mejorados
+    const participants = [
+        { address: '0x1a2b...c3d4', paid: true, isYou: true, joinDate: '2024-01-01', totalPaid: '160 USDC' },
+        { address: '0x3e4f...g5h6', paid: true, isYou: false, joinDate: '2024-01-01', totalPaid: '160 USDC' },
+        { address: '0x7i8j...k9l0', paid: false, isYou: false, joinDate: '2024-01-02', totalPaid: '80 USDC' },
+        { address: '0x1m2n...o3p4', paid: true, isYou: false, joinDate: '2024-01-01', totalPaid: '160 USDC' },
+        { address: '0x5q6r...s7t8', paid: false, isYou: false, joinDate: '2024-01-03', totalPaid: '40 USDC' },
     ];
 
-    const paidCount = participants.filter(p => p.paid && !p.isAvailable).length;
+    const roundHistory = [
+        { round: 1, winner: '0x1a2b...c3d4', amount: '80 USDC', date: '2024-01-08', status: 'completed' },
+        { round: 2, winner: '0x7i8j...k9l0', amount: '80 USDC', date: '2024-01-15', status: 'completed' },
+        { round: 3, winner: '0x3e4f...g5h6', amount: '80 USDC', date: '2024-01-22', status: 'in-progress' },
+        { round: 4, winner: 'Pending...', amount: '80 USDC', date: '2024-01-29', status: 'upcoming' },
+    ];
+
+    const paidCount = participants.filter(p => p.paid).length;
+    const totalValue = parseInt(group.poolAmount) * group.maxParticipants;
 
     return (
-        <div className="min-h-screen p-6 font-sans max-w-6xl mx-auto">
-            {/* Header */}
+        <div className="min-h-screen p-6 font-sans max-w-7xl mx-auto">
+            {/* Header Mejorado */}
             <div className="mb-8 pt-4">
                 <div className="flex items-center gap-4 mb-2">
                     <button
                         onClick={() => navigate('/')}
-                        className="action-btn"
+                        className="action-btn flex items-center gap-2"
                     >
-                        ← Back to Dashboard
+                        <span>←</span>
+                        Back to Dashboard
                     </button>
-                    <h1 className="text-3xl font-bold text-white">{group.name} DETAILS</h1>
-                </div>
-                <div className="glass-text-light">Detailed view of your pasanaku group</div>
-            </div>
-
-            <div className="grid lg:grid-cols-3 gap-6">
-                {/* Pool Status */}
-                <div className="card">
-                    <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-                        <span className="w-2 h-2 bg-celo-green rounded-full"></span>
-                        Pool Status
-                    </h2>
-                    <div className="space-y-4">
-                        <div className="flex justify-between items-center">
-                            <span className="glass-text-light">Total Pool:</span>
-                            <span className="text-white font-semibold text-lg">{group.poolAmount} USDC</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                            <span className="glass-text-light">Current Round:</span>
-                            <span className="text-white font-semibold">{group.currentRound} of {group.totalRounds}</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                            <span className="glass-text-light">Next Distribution:</span>
-                            <span className="text-white font-semibold">2 days</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                            <span className="glass-text-light">Your Turn:</span>
-                            <span className="text-celo-green font-semibold">Round {group.yourTurn}</span>
-                        </div>
+                    <div>
+                        <h1 className="text-3xl font-bold text-white">{group.name}</h1>
+                        <div className="glass-text-light">Traditional savings circle on blockchain</div>
                     </div>
-                </div>
-
-                {/* Quick Actions */}
-                <div className="card">
-                    <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-                        <span className="w-2 h-2 bg-circle-blue rounded-full"></span>
-                        Quick Actions
-                    </h2>
-                    <div className="space-y-3">
-                        <button
-                            onClick={() => setPaymentModal({ open: true, groupId: group.name, amount: group.contribution })}
-                            className="btn-primary w-full text-center"
-                        >
-                            Pay Contribution Fee
-                        </button>
-                        <button
-                            onClick={() => setDistributionModal({
-                                open: true,
-                                groupId: group.name,
-                                poolAmount: group.poolAmount,
-                                recipient: '0x3e4f...g5h6'
-                            })}
-                            className="btn-secondary w-full text-center"
-                        >
-                            Distribute Pool
-                        </button>
-                        <button
-                            onClick={() => setAlertModal({ open: true, groupId: group.name, amount: group.contribution })}
-                            className="action-btn w-full text-center"
-                        >
-                            Set Payment Reminder
-                        </button>
-                    </div>
-                </div>
-
-                {/* Group Info */}
-                <div className="card">
-                    <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-                        <span className="w-2 h-2 bg-xmtp-yellow rounded-full"></span>
-                        Group Info
-                    </h2>
-                    <div className="space-y-3">
-                        <div className="flex justify-between">
-                            <span className="glass-text-light">Contribution:</span>
-                            <span className="text-white font-semibold">{group.contribution} USDC</span>
-                        </div>
-                        <div className="flex justify-between">
-                            <span className="glass-text-light">Frequency:</span>
-                            <span className="text-white font-semibold">Weekly</span>
-                        </div>
-                        <div className="flex justify-between">
-                            <span className="glass-text-light">Status:</span>
-                            <span className={`font-semibold ${
-                                group.status === 'active' ? 'text-celo-green' :
-                                    group.status === 'ready' ? 'text-circle-blue' : 'text-orange-400'
-                            }`}>
-                {group.status.toUpperCase()}
-              </span>
-                        </div>
-                        <div className="flex justify-between">
-                            <span className="glass-text-light">Created:</span>
-                            <span className="text-white font-semibold">2 weeks ago</span>
-                        </div>
+                    <div className={`text-xs font-bold px-3 py-1 rounded-full ${
+                        group.status === 'active' ? 'badge-active' :
+                            group.status === 'ready' ? 'badge-ready' : 'badge-waiting'
+                    }`}>
+                        {group.status.toUpperCase()}
                     </div>
                 </div>
             </div>
 
-            {/* Participants List */}
-            <div className="card mt-6">
-                <h2 className="text-xl font-semibold text-white mb-4">
-                    Participants ({paidCount}/{group.maxParticipants} paid)
-                </h2>
-                <div className="grid md:grid-cols-2 gap-3">
-                    {participants.map((participant, index) => (
-                        <div
-                            key={index}
-                            className={`flex items-center justify-between p-3 rounded-lg border transition-all ${
-                                participant.isYou
-                                    ? 'bg-celo-green/20 border-celo-green'
-                                    : participant.isAvailable
-                                        ? 'bg-white/5 border-white/10'
-                                        : 'bg-white/10 border-white/20'
-                            }`}
-                        >
-                            <div className="flex items-center gap-3">
-                                <div className={`w-2 h-2 rounded-full ${
-                                    participant.paid ? 'bg-green-400' :
-                                        participant.isAvailable ? 'bg-gray-400' : 'bg-yellow-400'
-                                }`}></div>
-                                <span className={`${
-                                    participant.isYou ? 'text-celo-green font-semibold' : 'text-white'
+            {/* Tabs de Navegación */}
+            {/* Tabs Profesionales - Mejor Balance */}
+            <div className="flex gap-1 mb-8 bg-white/5 rounded-2xl p-2 border border-white/10">
+                {[
+                    { id: 'overview', label: 'Overview', icon: '📊', count: null },
+                    { id: 'participants', label: 'Participants', icon: '👥', count: participants.length },
+                    { id: 'history', label: 'History', icon: '📜', count: roundHistory.length }
+                ].map(tab => (
+                    <button
+                        key={tab.id}
+                        onClick={() => setActiveTab(tab.id as any)}
+                        className={`flex items-center gap-3 px-6 py-3 rounded-xl transition-all flex-1 justify-center group ${
+                            activeTab === tab.id
+                                ? 'bg-gradient-to-r from-celo-green to-circle-blue text-white shadow-lg'
+                                : 'text-white/70 hover:bg-white/10 hover:text-white'
+                        }`}
+                    >
+            <span className="text-lg transition-transform group-hover:scale-110">
+                {tab.icon}
+            </span>
+                        <div className="flex items-center gap-2">
+                            <span className="font-medium">{tab.label}</span>
+                            {tab.count !== null && (
+                                <span className={`text-xs px-2 py-1 rounded-full ${
+                                    activeTab === tab.id
+                                        ? 'bg-white/20 text-white'
+                                        : 'bg-white/10 text-white/60'
                                 }`}>
-                  {participant.address}
-                                    {participant.isYou && ' (You)'}
-                </span>
-                            </div>
-                            <div>
-                                {participant.isAvailable ? (
-                                    <span className="text-gray-400 text-sm">Available</span>
-                                ) : participant.paid ? (
-                                    <span className="badge-active">Paid</span>
-                                ) : (
-                                    <span className="badge-waiting">Pending</span>
-                                )}
-                            </div>
+                        {tab.count}
+                    </span>
+                            )}
                         </div>
-                    ))}
-                </div>
+                    </button>
+                ))}
             </div>
 
-            {/* Round History */}
-            <div className="card mt-6">
-                <h2 className="text-xl font-semibold text-white mb-4">Round History</h2>
-                <div className="space-y-3">
-                    <div className="flex items-center justify-between p-3 bg-white/10 rounded-lg">
-                        <div className="flex items-center gap-3">
-                            <span className="text-green-400">✅</span>
-                            <div>
-                                <div className="text-white">Round 1: Completed</div>
-                                <div className="text-xs glass-text-light">0x1a2b...c3d4 received 80 USDC</div>
-                            </div>
+            {/* Contenido de Tabs */}
+            <div className="grid lg:grid-cols-3 gap-6">
+                {/* Columna Izquierda - Siempre Visible */}
+                <div className="lg:col-span-1 space-y-6">
+                    {/* Quick Actions Card */}
+                    <div className="card">
+                        <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                            <span className="w-2 h-2 bg-circle-blue rounded-full"></span>
+                            Quick Actions
+                        </h2>
+                        <div className="space-y-3">
+                            <button
+                                onClick={() => setPaymentModal({ open: true, groupId: group.name, amount: group.contribution })}
+                                className="btn-primary w-full text-center flex items-center justify-center gap-2"
+                            >
+                                <span>💳</span>
+                                Pay Contribution
+                            </button>
+                            {group.status === 'ready' && (
+                                <button
+                                    onClick={() => setDistributionModal({
+                                        open: true,
+                                        groupId: group.name,
+                                        poolAmount: group.poolAmount,
+                                        recipient: '0x3e4f...g5h6'
+                                    })}
+                                    className="btn-secondary w-full text-center flex items-center justify-center gap-2"
+                                >
+                                    <span>💰</span>
+                                    Distribute Pool
+                                </button>
+                            )}
+                            <button
+                                onClick={() => setAlertModal({ open: true, groupId: group.name, amount: group.contribution })}
+                                className="action-btn w-full text-center flex items-center justify-center gap-2"
+                            >
+                                <span>⏰</span>
+                                Set Reminders
+                            </button>
                         </div>
-                        <div className="text-xs glass-text-light">1 week ago</div>
                     </div>
 
-                    <div className="flex items-center justify-between p-3 bg-white/10 rounded-lg">
-                        <div className="flex items-center gap-3">
-                            <span className="text-green-400">✅</span>
-                            <div>
-                                <div className="text-white">Round 2: Completed</div>
-                                <div className="text-xs glass-text-light">0x7i8j...k9l0 received 80 USDC</div>
+                    {/* Group Stats */}
+                    <div className="card">
+                        <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                            <span className="w-2 h-2 bg-celo-green rounded-full"></span>
+                            Group Stats
+                        </h2>
+                        <div className="space-y-3">
+                            <div className="flex justify-between items-center">
+                                <span className="glass-text-light">Total Value:</span>
+                                <span className="text-white font-semibold">{totalValue} USDC</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="glass-text-light">Participants:</span>
+                                <span className="text-white font-semibold">{paidCount}/{group.maxParticipants}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="glass-text-light">Completion:</span>
+                                <span className="text-white font-semibold">
+                                    {Math.round((group.currentRound / group.totalRounds) * 100)}%
+                                </span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="glass-text-light">Your Turn:</span>
+                                <span className="text-celo-green font-semibold">Round {group.yourTurn}</span>
                             </div>
                         </div>
-                        <div className="text-xs glass-text-light">3 days ago</div>
                     </div>
+                </div>
 
-                    <div className="flex items-center justify-between p-3 bg-celo-green/10 rounded-lg border border-celo-green/30">
-                        <div className="flex items-center gap-3">
-                            <span className="text-yellow-400">🎯</span>
-                            <div>
-                                <div className="text-white font-semibold">Round 3: In Progress</div>
-                                <div className="text-xs glass-text-light">0x3e4f...g5h6 will receive 80 USDC</div>
-                            </div>
-                        </div>
-                        <div className="text-xs glass-text-light">Current</div>
-                    </div>
+                {/* Columna Derecha - Contenido Dinámico */}
+                <div className="lg:col-span-2">
+                    {activeTab === 'overview' && (
+                        <div className="space-y-6">
+                            {/* Pool Status */}
+                            <div className="card">
+                                <h2 className="text-xl font-semibold text-white mb-4">Pool Overview</h2>
+                                <div className="grid md:grid-cols-2 gap-6">
+                                    <div className="text-center p-4 bg-white/10 rounded-xl">
+                                        <div className="text-3xl font-bold text-celo-green mb-2">{group.poolAmount} USDC</div>
+                                        <div className="text-sm glass-text-light">Current Pool</div>
+                                    </div>
+                                    <div className="text-center p-4 bg-white/10 rounded-xl">
+                                        <div className="text-3xl font-bold text-circle-blue mb-2">{group.currentRound}/{group.totalRounds}</div>
+                                        <div className="text-sm glass-text-light">Rounds Completed</div>
+                                    </div>
+                                </div>
 
-                    {Array.from({ length: group.totalRounds - 3 }, (_, i) => (
-                        <div key={i} className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
-                            <div className="flex items-center gap-3">
-                                <span className="text-gray-400">⏳</span>
-                                <div>
-                                    <div className="text-gray-400">Round {i + 4}: Upcoming</div>
-                                    <div className="text-xs text-gray-500">Waiting...</div>
+                                {/* Progress Bar */}
+                                <div className="mt-4">
+                                    <div className="flex justify-between text-sm mb-2">
+                                        <span className="glass-text-light">Round Progress</span>
+                                        <span className="text-white">Round {group.currentRound} of {group.totalRounds}</span>
+                                    </div>
+                                    <div className="w-full bg-white/20 rounded-full h-3">
+                                        <div
+                                            className="bg-gradient-to-r from-celo-green to-circle-blue h-3 rounded-full transition-all duration-500"
+                                            style={{ width: `${(group.currentRound / group.totalRounds) * 100}%` }}
+                                        ></div>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="text-xs text-gray-500">Future</div>
+
+                            {/* On-Chain Verification */}
+                            <OnChainVerification group={group} />
                         </div>
-                    ))}
+                    )}
+
+                    {activeTab === 'participants' && (
+                        <div className="card">
+                            <h2 className="text-xl font-semibold text-white mb-4">
+                                Participants ({paidCount}/{group.maxParticipants} paid)
+                            </h2>
+                            <div className="space-y-3">
+                                {participants.map((participant, index) => (
+                                    <div
+                                        key={index}
+                                        className={`flex items-center justify-between p-4 rounded-xl border transition-all ${
+                                            participant.isYou
+                                                ? 'bg-celo-green/20 border-celo-green'
+                                                : 'bg-white/10 border-white/20'
+                                        }`}
+                                    >
+                                        <div className="flex items-center gap-4">
+                                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                                                participant.paid ? 'bg-green-500/20' : 'bg-yellow-500/20'
+                                            }`}>
+                                                <span className={participant.paid ? 'text-green-400' : 'text-yellow-400'}>
+                                                    {participant.paid ? '✓' : '...'}
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <div className={`font-semibold ${
+                                                    participant.isYou ? 'text-celo-green' : 'text-white'
+                                                }`}>
+                                                    {participant.address}
+                                                    {participant.isYou && ' (You)'}
+                                                </div>
+                                                <div className="text-xs glass-text-light">
+                                                    Joined {participant.joinDate} • {participant.totalPaid}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            {participant.paid ? (
+                                                <span className="badge-active">Paid</span>
+                                            ) : (
+                                                <span className="badge-waiting">Pending</span>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {activeTab === 'history' && (
+                        <div className="card">
+                            <h2 className="text-xl font-semibold text-white mb-4">Round History</h2>
+                            <div className="space-y-4">
+                                {roundHistory.map((round, index) => (
+                                    <div
+                                        key={index}
+                                        className={`flex items-center justify-between p-4 rounded-xl border ${
+                                            round.status === 'completed' ? 'bg-white/10 border-white/20' :
+                                                round.status === 'in-progress' ? 'bg-celo-green/20 border-celo-green' :
+                                                    'bg-white/5 border-white/10'
+                                        }`}
+                                    >
+                                        <div className="flex items-center gap-4">
+                                            <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                                                round.status === 'completed' ? 'bg-green-500/20' :
+                                                    round.status === 'in-progress' ? 'bg-celo-green/20' :
+                                                        'bg-gray-500/20'
+                                            }`}>
+                                                <span className={
+                                                    round.status === 'completed' ? 'text-green-400' :
+                                                        round.status === 'in-progress' ? 'text-celo-green' :
+                                                            'text-gray-400'
+                                                }>
+                                                    {round.status === 'completed' ? '✓' :
+                                                        round.status === 'in-progress' ? '🎯' : '⏳'}
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <div className="font-semibold text-white">
+                                                    Round {round.round}: {round.winner}
+                                                </div>
+                                                <div className="text-sm glass-text-light">
+                                                    {round.amount} • {round.date}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className={`text-sm font-semibold ${
+                                            round.status === 'completed' ? 'text-green-400' :
+                                                round.status === 'in-progress' ? 'text-celo-green' :
+                                                    'text-gray-400'
+                                        }`}>
+                                            {round.status === 'completed' ? 'Completed' :
+                                                round.status === 'in-progress' ? 'In Progress' : 'Upcoming'}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
 

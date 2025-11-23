@@ -65,3 +65,35 @@ body {
 .glass-text-light {
     @apply text-white/70;
 }
+/* Agregar a index.css */
+/* Mejoras de animación y interactividad */
+.smooth-transition {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-lift:hover {
+    transform: translateY(-2px);
+}
+
+/* Mejorar las progress bars */
+.progress-bar {
+    @apply w-full bg-white/20 rounded-full h-2 overflow-hidden;
+}
+
+.progress-fill {
+    @apply h-2 rounded-full bg-gradient-to-r from-celo-green to-circle-blue transition-all duration-500;
+}
+
+/* Efectos de glassmorphism mejorados */
+.glass-card {
+    @apply bg-white/20 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-white/30;
+}
+
+.glass-card:hover {
+    @apply bg-white/25 border-white/40;
+}
+
+/* Mejoras de tipografía */
+.text-gradient {
+    @apply bg-gradient-to-r from-celo-green to-circle-blue bg-clip-text text-transparent;
+}
