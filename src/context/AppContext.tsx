@@ -27,7 +27,7 @@ export interface Notification {
 const mockGroups: Group[] = [
     {
         id: 1,
-        name: 'GROUP #1234',
+        name: 'Familia Heredia #001',
         poolAmount: '80',
         participants: 4,
         maxParticipants: 8,
@@ -39,7 +39,7 @@ const mockGroups: Group[] = [
     },
     {
         id: 2,
-        name: 'GROUP #5678',
+        name: 'Amigos Salvador #002',
         poolAmount: '150',
         participants: 4,
         maxParticipants: 4,
@@ -51,7 +51,7 @@ const mockGroups: Group[] = [
     },
     {
         id: 3,
-        name: 'GROUP #8910',
+        name: 'Campeones Calle Cruz #003',
         poolAmount: '40',
         participants: 2,
         maxParticipants: 6,

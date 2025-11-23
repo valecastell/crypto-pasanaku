@@ -19,22 +19,37 @@ const JoinGroup: React.FC = () => {
         // Simular búsqueda (1.5 segundos)
         await new Promise(resolve => setTimeout(resolve, 1500));
 
-        // Simular grupo encontrado
-        setFoundGroup({
-            id: '#7890',
-            contribution: '25 USDC',
-            participants: '3/6',
-            rounds: '6 total',
-            creator: '0x1a2b...c3d4',
-            status: 'active',
-            nextRound: '2 days'
-        });
+        // Simular diferentes estados de grupo
+        const groupStates = [
+            {
+                id: '#7890',
+                contribution: '25 USDC',
+                participants: '3/6',
+                rounds: '6 total',
+                creator: '0x1a2b...c3d4',
+                status: 'active',
+                nextRound: '2 days',
+                canJoin: true
+            },
+            {
+                id: '#9999',
+                contribution: '20 USDC',
+                participants: '8/8', // GRUPO LLENO
+                rounds: '8 total',
+                creator: '0x9a8b...c7d6',
+                status: 'active',
+                nextRound: '1 day',
+                canJoin: false // NO se puede unir
+            }
+        ];
 
+        const randomGroup = groupStates[Math.floor(Math.random() * groupStates.length)];
+        setFoundGroup(randomGroup);
         setIsSearching(false);
     };
 
     const joinGroup = async () => {
-        if (!foundGroup) return;
+        if (!foundGroup || !foundGroup.canJoin) return;
 
         setIsJoining(true);
 
@@ -98,12 +113,18 @@ const JoinGroup: React.FC = () => {
             {/* Group Found Section */}
             {foundGroup && (
                 <div className="card">
-                    <h2 className="text-xl font-semibold text-white mb-4">✅ Group Found</h2>
+                    <h2 className="text-xl font-semibold text-white mb-4">
+                        {foundGroup.canJoin ? '✅ Group Found' : '❌ Group Full'}
+                    </h2>
 
                     <div className="bg-white/10 rounded-xl p-4 mb-6">
                         <div className="flex items-center justify-between mb-3">
                             <div className="text-lg font-bold text-white">{foundGroup.id}</div>
-                            <span className="badge-active">{foundGroup.status}</span>
+                            <span className={`text-xs font-medium px-2 py-1 rounded-full ${
+                                foundGroup.canJoin ? 'badge-active' : 'bg-red-500/20 text-red-300 border border-red-500/30'
+                            }`}>
+                                {foundGroup.canJoin ? foundGroup.status : 'FULL'}
+                            </span>
                         </div>
                         <div className="space-y-2 glass-text-light text-sm">
                             <div className="flex justify-between">
@@ -122,18 +143,27 @@ const JoinGroup: React.FC = () => {
                                 <span>Next Round:</span>
                                 <span className="text-white font-semibold">{foundGroup.nextRound}</span>
                             </div>
-                            <div className="flex justify-between">
-                                <span>Creator:</span>
-                                <span className="text-white font-semibold">{foundGroup.creator}</span>
-                            </div>
                         </div>
+
+                        {/* MENSAJE DE GRUPO LLENO */}
+                        {!foundGroup.canJoin && (
+                            <div className="mt-4 p-3 bg-red-500/20 rounded-lg border border-red-500/30">
+                                <div className="text-red-300 text-sm text-center">
+                                    😔 This group is already full. You cannot join.
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     <div className="flex gap-3">
                         <button
                             onClick={joinGroup}
-                            disabled={isJoining}
-                            className="btn-primary flex-1 flex items-center justify-center gap-2 disabled:opacity-50"
+                            disabled={isJoining || !foundGroup.canJoin}
+                            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-semibold transition-all ${
+                                foundGroup.canJoin
+                                    ? 'bg-celo-green text-white hover:bg-green-600'
+                                    : 'bg-gray-600 text-gray-400 cursor-not-allowed'
+                            } ${isJoining ? 'opacity-50' : ''}`}
                         >
                             {isJoining ? (
                                 <>
@@ -143,13 +173,13 @@ const JoinGroup: React.FC = () => {
                             ) : (
                                 <>
                                     <span>👥</span>
-                                    Join Group
+                                    {foundGroup.canJoin ? 'Join Group' : 'Group Full'}
                                 </>
                             )}
                         </button>
                         <button
                             onClick={() => navigate('/')}
-                            className="action-btn flex-1"
+                            className="action-btn flex-1 py-3"
                         >
                             Back
                         </button>

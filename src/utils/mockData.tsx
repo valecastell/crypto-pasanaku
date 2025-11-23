@@ -9,6 +9,7 @@ export interface Group {
     status: 'active' | 'waiting' | 'ready';
     contribution: string;
     yourTurn: number;
+    canStart?: boolean;
 }
 
 export interface Notification {
@@ -28,11 +29,12 @@ export const mockGroups: Group[] = [
         poolAmount: '80',
         participants: 4,
         maxParticipants: 8,
-        currentRound: 3,
+        currentRound: 0, // Cambiar a 0 - no ha empezado
         totalRounds: 8,
-        status: 'active',
+        status: 'waiting', // Cambiar a 'waiting'
         contribution: '10',
-        yourTurn: 5
+        yourTurn: 5,
+        canStart: false // Nueva propiedad
     },
     {
         id: 2,
@@ -42,9 +44,10 @@ export const mockGroups: Group[] = [
         maxParticipants: 4,
         currentRound: 2,
         totalRounds: 4,
-        status: 'ready',
+        status: 'active', // Cambiar a 'active' cuando está lleno
         contribution: '25',
-        yourTurn: 3
+        yourTurn: 3,
+        canStart: true
     },
     {
         id: 3,
@@ -52,11 +55,12 @@ export const mockGroups: Group[] = [
         poolAmount: '40',
         participants: 2,
         maxParticipants: 6,
-        currentRound: 1,
+        currentRound: 0,
         totalRounds: 6,
         status: 'waiting',
         contribution: '10',
-        yourTurn: 4
+        yourTurn: 4,
+        canStart: false
     }
 ];
 
@@ -74,16 +78,16 @@ export const mockNotifications: Notification[] = [
         id: 2,
         type: 'distribution',
         groupId: 2,
-        title: 'Congratulations! - Group #5678',
-        message: 'Everyone paid, you can distribute 150 USDC',
-        timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000) // 2 hours ago
+        title: 'Pasanaku Round Complete! - Group #5678',
+        message: 'Round winner selected! 0x3e4f...g5h6 received 150 USDC', //
+        timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000)
     },
     {
         id: 3,
         type: 'reminder',
         groupId: 3,
         title: 'Reminder - Group #8910',
-        message: '1 day left until your next payment',
-        timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000) // 1 day ago
+        message: 'Group needs 4 more participants to start',
+        timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000)
     }
 ];

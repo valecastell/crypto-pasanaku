@@ -95,8 +95,8 @@ const Dashboard: React.FC = () => {
                                                 'text-orange-400 font-medium'
                                     }>
                                         {group.status === 'active' ? `Your turn in round ${group.yourTurn}` :
-                                            group.status === 'ready' ? 'READY TO DISTRIBUTE' :
-                                                'Waiting for payments'}
+                                            group.status === 'ready' ? 'READY TO START' : // cambie por mejor
+                                                `Waiting for ${group.maxParticipants - group.participants} more participants`}
                                     </span>
                                 </div>
                             </div>
@@ -222,6 +222,7 @@ const Dashboard: React.FC = () => {
                 poolAmount={distributionModal.poolAmount}
                 recipient={distributionModal.recipient}
             />
+
 
             <SetAlertModal
                 isOpen={alertModal.open}

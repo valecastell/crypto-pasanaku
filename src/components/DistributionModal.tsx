@@ -44,7 +44,9 @@ const DistributionModal: React.FC<DistributionModalProps> = ({
                 {step === 'confirm' && (
                     <div className="text-center">
                         <div className="text-4xl mb-4">💰</div>
-                        <p className="glass-text-light mb-6">Distribute {poolAmount} USDC to {recipient}?</p>
+                        <p className="glass-text-light mb-6">
+                            Select the winner for this round? The pool of {poolAmount} USDC will be randomly distributed.
+                        </p>
                         <button onClick={handleDistribute} className="btn-primary w-full mb-3">
                             Confirm Distribution
                         </button>
@@ -68,7 +70,9 @@ const DistributionModal: React.FC<DistributionModalProps> = ({
                     <div className="text-center">
                         <div className="text-4xl mb-4">🎉</div>
                         <p className="text-white font-semibold mb-2">Distribution Successful!</p>
-                        <p className="glass-text-light mb-4">{recipient} received {poolAmount} USDC</p>
+                        <p className="glass-text-light mb-4">
+                            🎉 <span className="text-white font-semibold">{recipient}</span> won the pasanaku and received {poolAmount} USDC!
+                        </p>
                         <div className="bg-green-500/20 border border-green-400/30 rounded-xl p-3 mb-4">
                             <p className="text-sm text-green-300">📬 Notification sent to all participants via XMTP</p>
                         </div>
